@@ -42,28 +42,30 @@ class Game:
             aces -= 1
 
         return total
+    def format_hand(self, hand):
+        return "[" + ", ".join(str(card) for card in hand) + "]"
 
     def display_hands(self, hide_dealer=True):
-        print("\nDEALER:", end=" ")
+        print("\nDEALER's Cards:", end=" ")
 
         if hide_dealer:
             print(f"[{self.dealer_hand[0]}, ?]")
         else:
             dealer_total = self.calculate_total(self.dealer_hand)
-            print(f"{self.dealer_hand} = {dealer_total}")
+            print(f"{self.format_hand(self.dealer_hand)} = {dealer_total}")
 
         player_total = self.calculate_total(self.player_hand)
-        print(f"PLAYER: {self.player_hand} = {player_total}")
+        print(f"PLAYER's Cards: {self.format_hand(self.player_hand)} = {player_total}")
 
     def player_turn(self):
         while True:
             total = self.calculate_total(self.player_hand)
 
             if total > 21:
-                print("OMG!!!!PLAYER IS BUST!!!!")
+                print("🤯 OMG!!!!PLAYER IS BUST!!!!")
                 break
 
-            choice = input(" What you wanna do next? 🤔 Please type (h) for Hit/(s) for Stand? ").strip().lower()
+            choice = input(" What you wanna do next? 🤔 Please type (h) for Hit/ (s) for Stand? ").strip().lower()
 
             if choice == "h":
                 self.deal_card(self.player_hand)
@@ -76,7 +78,7 @@ class Game:
                 print("🫢 OOPS!! Invalid input. Please only type h or s. Strictly no other inputs..")
 
     def dealer_turn(self):
-        print("\nDealer reveals his/her cards:")
+        print("\nDealer reveals cards...")
         while self.calculate_total(self.dealer_hand) < 17:
             self.deal_card(self.dealer_hand)
 
@@ -86,19 +88,19 @@ class Game:
 
         if player_total > 21:
             self.bankroll -= Game.BET
-            print("**PLAYER LOSES!** -$50")
+            print("player lose 50")
 
         elif dealer_total > 21:
             self.bankroll += Game.BET
-            print("**PLAYER WINS!** +$50")
+            print("player win 50")
 
         elif player_total > dealer_total:
             self.bankroll += Game.BET
-            print("**PLAYER WINS!** +$50")
+            print("player win 50")
 
         else:
             self.bankroll -= Game.BET
-            print("**PLAYER LOSES!** -$50")
+            print("player lose 50")
 
         if self.bankroll < 0:
             self.bankroll = 0
@@ -107,17 +109,15 @@ class Game:
 
     def play_round(self):
         if self.bankroll < Game.BET:
-            print("\nGAME OVER - You're broke!")
+            print("\ngame over")
             print(f"Final Bankroll: ${self.bankroll}")
             return False
 
         self.round_number += 1
 
-        print("\n==============================")
-        print("BLACKJACK")
         print(f"Bankroll: ${self.bankroll}")
-        print(f"=== ROUND {self.round_number} ===")
-        print(f"BET: ${Game.BET}")
+        print(f"Round {self.round_number} ===")
+        print(f"Bet: ${Game.BET}")
 
         self.create_deck()
         self.player_hand = []
